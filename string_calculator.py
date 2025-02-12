@@ -17,15 +17,6 @@ class DefaultDelimiterStrategy(DelimiterStrategy):
         return re.findall(r'-?\d+', numbers)
 
 
-class CustomDelimiterStrategy(DelimiterStrategy):
-    def __init__(self, delimiter):
-        self.delimiter = delimiter
-
-    def split(self, numbers: str):
-        # Custom strategy: Split by the given delimiter
-        return numbers.split(self.delimiter)
-
-
 class StringCalculator:
     def __init__(self):
         self.delimiter_strategy = DefaultDelimiterStrategy()  # Default to comma and newline
@@ -37,7 +28,6 @@ class StringCalculator:
         # Check for custom delimiter and switch strategy if needed
         if numbers.startswith("//"):
             numbers = self._remove_delimiters_from_input(numbers)
-            self._set_custom_delimiter(numbers)
 
         # Use the current delimiter strategy to split the numbers
         number_list = self._split_numbers(numbers)
@@ -47,16 +37,6 @@ class StringCalculator:
 
         # Return the sum of the numbers
         return sum(number_list)
-
-    def _set_custom_delimiter(self, numbers: str):
-        """Extract the custom delimiter if provided."""
-        # Custom delimiter may have multiple delimiters wrapped with square brackets
-        delimiter_part = numbers.split("\n")[0]  # Get the first line with delimiter information
-        if delimiter_part.startswith("//"):
-            delimiter = delimiter_part[2:]  # Strip "//"
-            if delimiter.startswith("[") and delimiter.endswith("]"):
-                delimiter = delimiter[1:-1]  # Strip the square brackets for a multi-character delimiter
-            self.delimiter_strategy = CustomDelimiterStrategy(delimiter)
 
     def _remove_delimiters_from_input(self, numbers: str) -> str:
         """Remove the custom delimiter line from the input."""
